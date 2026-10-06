@@ -1,0 +1,11 @@
+html, body { margin: 0; height: 100%; overflow: hidden; background: #231f20; }
+canvas { display: block; position: fixed; left: 0; top: 0; width: 100%; height: 100%; background: #231f20; }
+.screen { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #2a1a10; color: #f2e3c2; font-family: Georgia, "Times New Roman", serif; text-align: center; padding: 24px; }
+.screen h1 { font-size: clamp(34px, 6vw, 64px); margin: 0; letter-spacing: 1px; }
+.screen .tagline { margin: 6px 0 36px; font-style: italic; font-size: clamp(16px, 2.4vw, 24px); color: #cfa672; }
+.screen .track { width: min(420px, 80vw); height: 10px; border: 1px solid #a37a47; border-radius: 6px; overflow: hidden; background: #170d07; }
+.screen .fill { width: 0; height: 100%; background: #e0b873; transition: width 0.25s linear; }
+.screen .note { margin-top: 18px; max-width: 520px; font-size: 15px; line-height: 1.45; color: #b99a72; font-family: system-ui, sans-serif; }
+.screen.failed .track { display: none; }
+.screen.failed h1 { font-size: clamp(26px, 4vw, 40px); }
+.screen.failed .note { color: #f2e3c2; font-size: 17px; }

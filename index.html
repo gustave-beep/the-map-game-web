@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'wasm-unsafe-eval' blob:; style-src 'self'; img-src 'self' data: blob:; media-src 'self' data: blob:; connect-src 'self' data: blob:; worker-src 'self' blob:; font-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'">
+    <title>The Map Game</title>
+    <link rel="stylesheet" href="TemplateData/game.css">
+  </head>
+  <body>
+    <canvas id="game" tabindex="-1"></canvas>
+    <div id="screen" class="screen">
+      <h1>The Map Game</h1>
+      <p class="tagline">Pacific Northwest</p>
+      <div class="track"><div id="bar" class="fill"></div></div>
+      <p id="note" class="note">Downloading the game. This takes a minute the first time and is kept for next time.</p>
+    </div>
+    <div id="boot" hidden
+      data-data="Build/d93dc5e2173849f53a5133aff1e1bac5.data.unityweb"
+      data-framework="Build/29cb92c6ea6d19af365c81d2098e7170.framework.js.unityweb"
+      data-code="Build/c082c9aec035ac30222e944b06eefd9b.wasm.unityweb"
+      data-company="DefaultCompany"
+      data-product="My project"
+      data-version="0.1.0"></div>
+    <script src="Build/0b2f403a34c0053dfbf895785214e38d.loader.js"></script>
+    <script src="TemplateData/start.js"></script>
+  </body>
+</html>
