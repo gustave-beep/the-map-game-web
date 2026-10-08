@@ -36,7 +36,10 @@
   // so the next visit starts without downloading anything.
   function downloadPiece(url, size, cache, onBytes) {
     return (cache ? cache.match(url) : Promise.resolve(undefined)).then(function (hit) {
-      if (hit) return hit.blob().then(function (blob) { onBytes(blob.size); return blob; });
+      if (hit) return hit.blob().then(function (blob) {
+        if (blob.size !== size) return cache.delete(url).then(function () { return downloadPiece(url, size, cache, onBytes); });
+        onBytes(blob.size); return blob;
+      });
       return fetch(url).then(function (response) {
         if (!response.ok) throw new Error("HTTP " + response.status + " for " + url);
         var reader = response.body.getReader(), parts = [];
@@ -60,7 +63,7 @@
     return fetch(boot.data + ".parts.json").then(function (response) {
       if (!response.ok) return { url: boot.data, revoke: false };
       return response.json().then(function (manifest) {
-        var opened = window.caches ? caches.open(CACHE) : Promise.resolve(null);
+        var opened = window.caches ? caches.open(CACHE).catch(function () { return null; }) : Promise.resolve(null);
         return opened.then(function (cache) {
           var done = 0, names = manifest.parts.map(function (part) { return part.file; });
           function onBytes(count) {
@@ -90,6 +93,8 @@
   function start() {
     // The game uses the right mouse button for orders and camera movement.
     canvas.addEventListener("contextmenu", function (event) { event.preventDefault(); });
+    // Keep the tutorial shortcut in the game instead of opening browser help.
+    window.addEventListener("keydown", function (event) { if (event.key === "F1") event.preventDefault(); });
     loadData().then(function (data) {
       note.textContent = "Starting up...";
       bar.style.width = "100%";
@@ -101,6 +106,7 @@
         companyName: boot.company,
         productName: boot.product,
         productVersion: boot.version,
+        autoSyncPersistentDataPath: true,
         // The data is already cached piece by piece above; a one-off object URL must not be cached again.
         cacheControl: function () { return "no-store"; },
         devicePixelRatio: Math.min(window.devicePixelRatio || 1, 1.5)
@@ -109,6 +115,7 @@
       return createUnityInstance(canvas, config).then(function () {
         if (data.revoke) URL.revokeObjectURL(data.url);
         screen.style.display = "none";
+        canvas.focus();
       });
     }).catch(function (error) {
       fail("The game could not start", "Check your connection and reload the page. (" + String(error) + ")");
