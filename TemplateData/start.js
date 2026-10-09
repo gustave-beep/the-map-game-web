@@ -90,7 +90,17 @@
     });
   }
 
+  // A guess at how strong the device is, so a weak one starts on lower graphics settings instead of stuttering first.
+  // The game then measures its own frame rate and adjusts, and the player can choose in the settings.
+  function deviceTier() {
+    var memory = navigator.deviceMemory || 8, cores = navigator.hardwareConcurrency || 8;
+    if (memory <= 4 || cores <= 4) return "low";
+    if (memory >= 8 && cores >= 8) return "high";
+    return "medium";
+  }
+
   function start() {
+    if (location.hash.indexOf("tier=") < 0) location.hash = (location.hash ? location.hash + "&" : "#") + "tier=" + deviceTier();
     // The game uses the right mouse button for orders and camera movement.
     canvas.addEventListener("contextmenu", function (event) { event.preventDefault(); });
     // Keep the tutorial shortcut in the game instead of opening browser help.
@@ -112,7 +122,9 @@
         devicePixelRatio: Math.min(window.devicePixelRatio || 1, 1.5)
       };
       if (boot.code) config.codeUrl = boot.code;
-      return createUnityInstance(canvas, config).then(function () {
+      return createUnityInstance(canvas, config).then(function (instance) {
+        // Lets the test harness in Tools/WebPerf read the engine's memory; the page address has to ask for it.
+        if (location.hash.indexOf("perf") >= 0) window.unityInstance = instance;
         if (data.revoke) URL.revokeObjectURL(data.url);
         screen.style.display = "none";
         canvas.focus();
